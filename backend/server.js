@@ -2,16 +2,23 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
 const homeRoutes = require('./routes/home');
+const adminRoutes = require('./routes/admin');
+const destinationRoutes = require('./routes/destinations');
 
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Serve uploaded images statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/travel-app', {
@@ -24,10 +31,12 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/travel-ap
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api', homeRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/destinations', destinationRoutes);
 
 // Health check
 app.get('/', (req, res) => {
-  res.json({ message: 'Travel App API is running!' });
+  res.json({ message: 'Travel App API v2 is running!' });
 });
 
 // Start server

@@ -51,7 +51,7 @@ function Register({ onLogin }) {
       localStorage.setItem('user', JSON.stringify(response.data.user));
       
       // Update authentication state
-      onLogin();
+      onLogin(response.data.user);
       
       // Redirect to home
       navigate('/');
